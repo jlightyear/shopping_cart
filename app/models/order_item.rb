@@ -5,6 +5,7 @@ class OrderItem < ActiveRecord::Base
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validate :product_present
   validate :order_present
+  # validate :exits_oitem
 
   before_save :finalize
 
@@ -30,6 +31,13 @@ private
   def order_present
     if order.nil?
       errors.add(:order, "is not a valid order.")
+    end
+  end
+
+  def exits_oitem
+    exits = OrderItem.where(product_id: product )
+    if exits.size > 1
+      errors.add(:order, "item already exits") 
     end
   end
 
